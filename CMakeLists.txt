@@ -7,12 +7,13 @@ if(NOT DEFINED WASI_SYSROOT)
       Usually it's located as /usr/share/wasi-sysroot/ or /opt/wasi-sysroot/.")
 endif()
 
-if(NOT DEFINED WASM_RUNNER)
-    message(FATAL_ERROR "WASM runner not defined. Please set variable \
-    WASM_RUNNER to a valid executable to execute WASM files, like wasmtime or \
-    wasmer. Set the variable with `-DWASM_RUNNER=<executable>`.")
-endif()
+# if(NOT DEFINED WASM_RUNNER)
+#     message(FATAL_ERROR "WASM runner not defined. Please set variable \
+#     WASM_RUNNER to a valid executable to execute WASM files, like wasmtime or \
+#     wasmer. Set the variable with `-DWASM_RUNNER=<executable>`.")
+# endif()
 
+project(quickjs LANGUAGES C)
 
 
 # We're building for WebAssembly
@@ -22,7 +23,7 @@ set(CMAKE_SYSTEM_NAME WASI)
 set(CMAKE_SYSTEM_VERSION 1)
 set(CMAKE_SYSTEM_PROCESSOR wasm32)
 set(triple wasm32-wasi)
-set(WASI_HOST_EXE_SUFFIX ".wasm")
+set(CMAKE_EXECUTABLE_SUFFIX ".wasm")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --target=wasm32-unknown-wasi -DEMSCRIPTEN \
   --sysroot=${WASI_SYSROOT} \
   -D_WASI_EMULATED_SIGNAL \
@@ -30,7 +31,6 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --target=wasm32-unknown-wasi -DEMSCRIPTEN \
   -D_WASI_EMULATED_PROCESS_CLOCKS ")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lwasi-emulated-getpid ")
 
-project(quickjs LANGUAGES C)
 
 # static linking of libwinpthread-1.dll in mingw
 if(WIN32)
@@ -88,32 +88,32 @@ endif()
 add_executable(qjsc src/qjsc.c)
 target_link_libraries(qjsc PUBLIC qjs)
 
-if(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "aarch64")
-  add_custom_command(
-    OUTPUT repl.c qjscalc.c
-    COMMAND
-      qemu-aarch64 -L /usr/aarch64-linux-gnu/ qjsc -c -o
-      ${CMAKE_CURRENT_BINARY_DIR}/repl.c -m
-      ${CMAKE_CURRENT_SOURCE_DIR}/src/repl.js
-    COMMAND
-      qemu-aarch64 -L /usr/aarch64-linux-gnu/ qjsc -c -o
-      ${CMAKE_CURRENT_BINARY_DIR}/qjscalc.c -m
-      ${CMAKE_CURRENT_SOURCE_DIR}/src/qjscalc.js
-    DEPENDS qjsc)
-else()
-  add_custom_command(
-    OUTPUT repl.c qjscalc.c
-    COMMAND ${WASM_RUNNER} $<TARGET_FILE:qjsc> -- -c -o ${CMAKE_CURRENT_BINARY_DIR}/repl.c -m
-            ${CMAKE_CURRENT_SOURCE_DIR}/src/repl.js
-    COMMAND ${WASM_RUNNER} $<TARGET_FILE:qjsc> -- -c -o ${CMAKE_CURRENT_BINARY_DIR}/qjscalc.c -m
-            ${CMAKE_CURRENT_SOURCE_DIR}/src/qjscalc.js
-    DEPENDS qjsc)
+# if(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "aarch64")
+#   add_custom_command(
+#     OUTPUT repl.c qjscalc.c
+#     COMMAND
+#       qemu-aarch64 -L /usr/aarch64-linux-gnu/ qjsc -c -o
+#       ${CMAKE_CURRENT_BINARY_DIR}/repl.c -m
+#       ${CMAKE_CURRENT_SOURCE_DIR}/src/repl.js
+#     COMMAND
+#       qemu-aarch64 -L /usr/aarch64-linux-gnu/ qjsc -c -o
+#       ${CMAKE_CURRENT_BINARY_DIR}/qjscalc.c -m
+#       ${CMAKE_CURRENT_SOURCE_DIR}/src/qjscalc.js
+#     DEPENDS qjsc)
+# else()
+#   add_custom_command(
+#     OUTPUT repl.c qjscalc.c
+#     COMMAND ${WASM_RUNNER} $<TARGET_FILE:qjsc> -- -c -o ${CMAKE_CURRENT_BINARY_DIR}/repl.c -m
+#             ${CMAKE_CURRENT_SOURCE_DIR}/src/repl.js
+#     COMMAND ${WASM_RUNNER} $<TARGET_FILE:qjsc> -- -c -o ${CMAKE_CURRENT_BINARY_DIR}/qjscalc.c -m
+#             ${CMAKE_CURRENT_SOURCE_DIR}/src/qjscalc.js
+#     DEPENDS qjsc)
 
-endif()
+# endif()
 
 add_executable(quickjs src/qjs.c)
 
 target_link_libraries(quickjs PUBLIC qjs)
 
-add_executable(run-test262 src/run-test262.c)
-target_link_libraries(run-test262 PUBLIC qjs)
+# add_executable(run-test262 src/run-test262.c)
+# target_link_libraries(run-test262 PUBLIC qjs)

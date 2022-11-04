@@ -9,6 +9,14 @@
 > It would be nice if you can come up with a build script for another build system, probably XMake.
 > I don't have time to do so anyway.
 
+
+## Building for `wasm32-unknown-wasi`
+
+- Install WASI SDK.
+- Set variable `WASI_SYSROOT` to your WASI Sysroot path using `-DWASI_SYSROOT=<path>`. Usually it's
+  located as /usr/share/wasi-sysroot/ or /opt/wasi-sysroot/.
+- Build just like other CMake projects.
+
 ---
 
 ![QuickJS Build Matrix](https://github.com/napi-bindings/quickjs-build/workflows/QuickJS%20Build%20Matrix/badge.svg?branch=master)
@@ -16,6 +24,7 @@
 ## Version 2021-03-27
 
 - [QuickJS JavaScript Engine](#quickjs-javascript-engine)
+  - [Building for `wasm32-unknown-wasi`](#building-for-wasm32-unknown-wasi)
   - [Version 2021-03-27](#version-2021-03-27)
   - [Introduction](#introduction)
     - [Main Features:](#main-features)
