@@ -1,16 +1,32 @@
 # QuickJS JavaScript Engine
 
+> **This is a standalone version of the QuickJS engine that compiles to WebAssembly with WASI support.**
+> 
+> Well... f*ck CMake. It's so freaking hard to use, yet it's probably the only choice available if 
+> you don't want to hand-craft makefiles and adapt for all those messy things that changes from 
+> system to system.
+>
+> It would be nice if you can come up with a build script for another build system, probably XMake.
+> I don't have time to do so anyway.
+
+---
+
 ![QuickJS Build Matrix](https://github.com/napi-bindings/quickjs-build/workflows/QuickJS%20Build%20Matrix/badge.svg?branch=master)
 
 ## Version 2021-03-27
 
-- [Introduction](#introduction)
-- [Building](#building)
-- [Code of conduct](CODE_OF_CONDUCT)
-- [Team](#team)
-- [References](#references)
-- [Acknowledgments](#acknowledgements)
-- [License](#license)
+- [QuickJS JavaScript Engine](#quickjs-javascript-engine)
+  - [Version 2021-03-27](#version-2021-03-27)
+  - [Introduction](#introduction)
+    - [Main Features:](#main-features)
+  - [Building](#building)
+    - [Building on Windows](#building-on-windows)
+    - [Building on Unix-like platform](#building-on-unix-like-platform)
+  - [References](#references)
+  - [Team](#team)
+    - [Nicola Del Gobbo](#nicola-del-gobbo)
+  - [Acknowledgements](#acknowledgements)
+  - [License](#license)
 
 ## Introduction
 

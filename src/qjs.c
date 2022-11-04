@@ -41,11 +41,11 @@
 #include "cutils.h"
 #include "quickjs-libc.h"
 
-extern const uint8_t qjsc_repl[];
-extern const uint32_t qjsc_repl_size;
+// extern const uint8_t qjsc_repl[];
+// extern const uint32_t qjsc_repl_size;
 #ifdef CONFIG_BIGNUM
-extern const uint8_t qjsc_qjscalc[];
-extern const uint32_t qjsc_qjscalc_size;
+// extern const uint8_t qjsc_qjscalc[];
+// extern const uint32_t qjsc_qjscalc_size;
 static int bignum_ext;
 #endif
 
@@ -488,11 +488,11 @@ int main(int argc, char **argv)
     }
     
     if (!empty_run) {
-#ifdef CONFIG_BIGNUM
-        if (load_jscalc) {
-            js_std_eval_binary(ctx, qjsc_qjscalc, qjsc_qjscalc_size, 0);
-        }
-#endif
+// #ifdef CONFIG_BIGNUM
+//         if (load_jscalc) {
+//             js_std_eval_binary(ctx, qjsc_qjscalc, qjsc_qjscalc_size, 0);
+//         }
+// #endif
         js_std_add_helpers(ctx, argc - optind, argv + optind);
 
         /* make 'std' and 'os' visible to non module code */
@@ -522,9 +522,9 @@ int main(int argc, char **argv)
             if (eval_file(ctx, filename, module))
                 goto fail;
         }
-        if (interactive) {
-            js_std_eval_binary(ctx, qjsc_repl, qjsc_repl_size, 0);
-        }
+        // if (interactive) {
+        //     js_std_eval_binary(ctx, qjsc_repl, qjsc_repl_size, 0);
+        // }
         js_std_loop(ctx);
     }
     
@@ -537,30 +537,30 @@ int main(int argc, char **argv)
     JS_FreeContext(ctx);
     JS_FreeRuntime(rt);
 
-    if (empty_run && dump_memory) {
-        clock_t t[5];
-        double best[5];
-        int i, j;
-        for (i = 0; i < 100; i++) {
-            t[0] = clock();
-            rt = JS_NewRuntime();
-            t[1] = clock();
-            ctx = JS_NewContext(rt);
-            t[2] = clock();
-            JS_FreeContext(ctx);
-            t[3] = clock();
-            JS_FreeRuntime(rt);
-            t[4] = clock();
-            for (j = 4; j > 0; j--) {
-                double ms = 1000.0 * (t[j] - t[j - 1]) / CLOCKS_PER_SEC;
-                if (i == 0 || best[j] > ms)
-                    best[j] = ms;
-            }
-        }
-        printf("\nInstantiation times (ms): %.3f = %.3f+%.3f+%.3f+%.3f\n",
-               best[1] + best[2] + best[3] + best[4],
-               best[1], best[2], best[3], best[4]);
-    }
+    // if (empty_run && dump_memory) {
+    //     clock_t t[5];
+    //     double best[5];
+    //     int i, j;
+    //     for (i = 0; i < 100; i++) {
+    //         t[0] = clock();
+    //         rt = JS_NewRuntime();
+    //         t[1] = clock();
+    //         ctx = JS_NewContext(rt);
+    //         t[2] = clock();
+    //         JS_FreeContext(ctx);
+    //         t[3] = clock();
+    //         JS_FreeRuntime(rt);
+    //         t[4] = clock();
+    //         for (j = 4; j > 0; j--) {
+    //             double ms = 1000.0 * (t[j] - t[j - 1]) / CLOCKS_PER_SEC;
+    //             if (i == 0 || best[j] > ms)
+    //                 best[j] = ms;
+    //         }
+    //     }
+    //     printf("\nInstantiation times (ms): %.3f = %.3f+%.3f+%.3f+%.3f\n",
+    //            best[1] + best[2] + best[3] + best[4],
+    //            best[1], best[2], best[3], best[4]);
+    // }
     return 0;
  fail:
     js_std_free_handlers(rt);
